@@ -22,13 +22,15 @@ It generate compile_commands.json from .uvprojx and .dep file. So the keil MDK p
 uvConvertor-CLI.exe -f <path to .uvprojx file> -o <output path> [-e] <external options>
 ```
 
-
 ## Build：
+
 ### Clone Source Code
+
 * `git clone https://github.com/vankubo/uvConvertor.git`
 * `cd uvConvertor`
 * `git submodule update --init --recursive`
-### Makefile
+  
+  ### Makefile
 
 It write under C++17,compiled with clang++. You can modify the project in Makefile.
 
@@ -49,3 +51,13 @@ It write under C++17,compiled with clang++. You can modify the project in Makefi
 * `cmake .. -G"Visual Studio 17 2022"`
 
 * use Visual Studio open `main.sln`
+
+### xmake
+
+* install xmake
+
+* Into the project folder
+
+* xmake
+
+* 

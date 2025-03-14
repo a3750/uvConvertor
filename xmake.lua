@@ -4,8 +4,8 @@ target("uvConvertor-CLI")
     set_kind("binary")
     set_languages("c99", "c++20")
     --toolchain
-    set_toolset("cxx", "clang")
-    set_toolset("ld", "clang++")
+    --set_toolset("cxx", "clang")
+    --set_toolset("ld", "clang++")
     --- CLI11
     local CLI11_DIR="$(projectdir)/CLI11"
     add_includedirs(CLI11_DIR.."/include")
