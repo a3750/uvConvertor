@@ -141,21 +141,27 @@ uVConvertor::uVConvertor(std::string uvProjx, std::string target)
 		buildLogHtmFile.close();
 
 		// 提取所有参数
+		std::filesystem::path ifDir(ifPath);
 		for (const auto& buildDepString : buildDepStringList)
 		{
 			std::list<std::string> fileAndArguments, arguments;
 			StringSplit(buildDepString, "\\)\\(", fileAndArguments);
 
-			m_fileList.push_back(fileAndArguments.front());
+			auto file = (ifDir / fileAndArguments.front()).lexically_normal();
+			m_fileList.push_back(file.generic_string());
 			fileAndArguments.pop_front();
 			if (!fileAndArguments.empty())
 			{
 				StringSplit(fileAndArguments.back(), " {2,}", arguments);		// 按照两个空格分割参数
 				for (auto& argumentStr : arguments)
 				{
-					if (argumentStr.find("-I") == 0 && argumentStr.rfind("\"") == (argumentStr.size() - 1))		// 为-I开头的行去除行尾"字符
+					if (argumentStr.find("-I") == 0)		// 为-I开头的行去除行尾"字符
 					{
-						argumentStr.erase(argumentStr.end() - 1);
+						if (argumentStr.rfind("\"") == (argumentStr.size() - 1))
+						{
+							argumentStr.erase(argumentStr.end() - 1);
+						}
+						argumentStr = "-I" + (ifDir / argumentStr.substr(2)).lexically_normal().generic_string();
 					}
 				}
 				arguments.push_back(toolchainPath);
