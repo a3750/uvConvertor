@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include "nlohmann/json.hpp"
 
 /***************************************************************
   *  @brief 
@@ -14,7 +15,7 @@ class uVConvertor
 	public:
 	uVConvertor(std::string uvprojx, std::string target);
 	~uVConvertor();
-	void toCompileJson(std::string outPath,std::string extOptions="");
+	nlohmann::json toCompileJson(std::string extOptions="");
 	void printItems();
 	private:
 	std::list<std::string> m_fileList;

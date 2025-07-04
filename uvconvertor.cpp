@@ -1,6 +1,5 @@
 ﻿#include "uvconvertor.hpp"
 #include "tinyxml2/tinyxml2.h"
-#include "nlohmann/json.hpp"
 #include <iostream>
 #include <fstream>
 #include "utils.hpp"
@@ -205,7 +204,7 @@ void uVConvertor::printItems()
   *  @note      
   *  @Sample usage:      
  **************************************************************/
-void uVConvertor::toCompileJson(std::string outPath,std::string extOptions)
+json uVConvertor::toCompileJson(std::string extOptions)
 {
 	//extern options
 	std::list<std::string> extop;
@@ -322,16 +321,5 @@ void uVConvertor::toCompileJson(std::string outPath,std::string extOptions)
 			j.push_back(j1);
     }
 	
-	
-	// write prettified JSON to another file
-	outPath.append("/compile_commands.json");
-
-	/*debug*/
-	//std::cout<<"[Debug] output file:"<<outPath<<std::endl;
-	replace(outPath.begin(),outPath.end(),'\\','/');
-	//std::cout<<"[Debug] output file:"<<outPath<<std::endl;
-
-	std::ofstream o(outPath);
-	o << std::setw(4) << j << std::endl;
-
+	return j;
 }

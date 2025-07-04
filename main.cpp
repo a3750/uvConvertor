@@ -15,8 +15,8 @@ int main(int argc, char **argv)
 	CLI::App app("uVConvertor");
     // add version output
     app.set_version_flag("--version", std::string(CLI11_VERSION));
-    std::string inputFile;
-    CLI::Option *opt = app.add_option("-f,--file", inputFile, "uvProject File name")->check(CLI::ExistingFile)->required();
+    std::vector<std::string> inputFiles;
+    CLI::Option *opt = app.add_option("-f,--file", inputFiles, "uvProject File name")->check(CLI::ExistingFile)->required();
 
 	std::string target;
     CLI::Option *topt = app.add_option("-t,--target", target, "uvProject target name");
@@ -30,24 +30,33 @@ int main(int argc, char **argv)
     CLI11_PARSE(app, argc, argv);
 
 	// convertor to absolute path
-	fs::path in_path(inputFile);
-	inputFile = std::filesystem::absolute(in_path).string();
-
-	fs::path out_path(outputFile);
-	outputFile = std::filesystem::absolute(outputFile).string();
-
-#if DEBUG
-	cout<<"-------------------------------"<<endl;
-    cout<<"input file:"<<inputFile<<endl;
-	cout<<"output file:"<<outputFile<<endl;
-	cout<<"ext options:"<<extOptions<<endl;
-	cout<<"-------------------------------"<<endl;
-#endif
-	uVConvertor uvc(inputFile, target);
-	//uvc.printItems();
-	uvc.toCompileJson(outputFile,extOptions);
+	nlohmann::json json;
+	for (auto inputFile : inputFiles) {
+		fs::path in_path(inputFile);
+		inputFile = std::filesystem::absolute(in_path).string();
 	
-	cout << "Done." << endl;
+	#if DEBUG
+		cout<<"-------------------------------"<<endl;
+		cout<<"input file:"<<inputFile<<endl;
+		cout<<"output file:"<<outputFile<<endl;
+		cout<<"ext options:"<<extOptions<<endl;
+		cout<<"-------------------------------"<<endl;
+	#endif
+		uVConvertor uvc(inputFile, target);
+		//uvc.printItems();
+		auto j = uvc.toCompileJson(extOptions);
+		for (auto item : j) {
+			json += item;
+		}
+	}
+	
+	fs::path out_path(outputFile);
+	if (std::ofstream fs(out_path / "compile_commands.json"); fs) {
+		fs << std::setw(4) << json;
+		cout << "Done." << endl;
+	} else {
+		cerr << "Cannot open file " << outputFile << endl;
+	}
 	
 	return 0;
 }
