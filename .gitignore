@@ -1,0 +1,12 @@
+.DS_Store
+/target
+/.vscode
+compile_commands.json
+Cargo.lock
+
+examples/resource/project/MDK-ARM/*
+!examples/resource/project/MDK-ARM/uv.uvprojx
+!**/output
+examples/resource/project/MDK-ARM/output/*
+!examples/resource/project/MDK-ARM/output/*.build_log.htm
+!examples/resource/project/MDK-ARM/output/*.dep

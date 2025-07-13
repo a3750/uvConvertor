@@ -1,0 +1,19 @@
+[package]
+name = "uvconvertor"
+version = "0.1.0"
+edition = "2024"
+repository = "https://github.com/a3750/uvconvertor.git"
+authors = ["Jie 1066751867@qq.com"]
+description = "A tool generate compile_commands.json from keilMDKs' .uvprojx file"
+license = "MIT"
+keywords = ["clangd", "compile_commands", "Keil v5", "MDK-ARM"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+clap = { version = "4.5.41", features = ["derive"] }
+rayon = "1.10.0"
+regex = "1.11.1"
+roxmltree = "0.20.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+shell-words = "1.1.0"
