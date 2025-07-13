@@ -6,7 +6,7 @@ repository = "https://github.com/a3750/uvconvertor.git"
 authors = ["Jie 1066751867@qq.com"]
 description = "A tool generate compile_commands.json from keilMDKs' .uvprojx file"
 license = "MIT"
-keywords = ["clangd", "compile_commands", "Keil v5", "MDK-ARM"]
+keywords = ["clangd", "compile_commands", "Keilv5", "MDK-ARM"]
 categories = ["command-line-utilities"]
 
 [dependencies]
