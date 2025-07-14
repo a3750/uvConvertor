@@ -1,13 +1,18 @@
+use std::{
+    fs::{read_to_string, File},
+    path::{Path, PathBuf},
+    collections::HashMap,
+    io::{self, Read},
+    error::Error,
+    ops::Add,
+};
 use regex::{Captures, Regex};
 use roxmltree::{Document, ExpandedName, Node};
 use serde::Serialize;
-use std::{
-    collections::HashMap, error::Error, fs::{read_to_string, File}, io::{self, Read}, ops::Add, path::{Path, PathBuf}
-};
 
 
 #[derive(Debug)]
-pub struct UVConvertor {
+pub struct Convertor {
     commands: Vec<CompileCommand>,
 }
 
@@ -18,7 +23,7 @@ struct CompileCommand {
     arguments: Vec<String>,
 }
 
-impl Add for UVConvertor {
+impl Add for Convertor {
     type Output = Self;
 
     fn add(mut self, rhs: Self) -> Self::Output {
@@ -27,7 +32,7 @@ impl Add for UVConvertor {
     }
 }
 
-impl UVConvertor {
+impl Convertor {
     pub fn new() -> Self {
         Self { commands: Vec::new() }
     }
@@ -92,7 +97,7 @@ impl UVConvertor {
                 }
                 
                 // 检查当前参数是否需要移除
-                if prefixes.contains(&arg) {
+                if prefixes.contains(arg) {
                     // 标记跳过下一个参数（如果有）
                     let next_exists = i < command.arguments.len() - 1;
                     let next_is_value = next_exists && 
@@ -115,10 +120,12 @@ impl UVConvertor {
 
     pub fn remove_sysroot(&mut self) {
         fn contains_std_headers(path: &Path) -> bool {
-            path.read_dir().is_ok_and(|entries| {
-                entries.filter_map(Result::ok).find(|e| {
-                    e.file_name() == "stdio.h" || e.file_name() == "iostream"
-                }).is_some()
+            path.read_dir().is_ok_and(|mut entries| {
+                entries.any(|e| {
+                    e.is_ok_and(|e| {
+                        e.file_name() == "stdio.h" || e.file_name() == "iostream"
+                    })
+                })
             })
         }
 

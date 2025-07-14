@@ -1,2 +1,2 @@
-pub mod uvconvertor;
-pub use uvconvertor::UVConvertor;
+pub mod lib;
+pub use lib::Convertor;

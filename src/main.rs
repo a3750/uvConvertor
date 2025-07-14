@@ -2,7 +2,7 @@ mod uvconvertor;
 use std::{collections::HashSet, fs::{self, File}, io::stdout, path::PathBuf};
 use clap::Parser;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
-use uvconvertor::UVConvertor;
+use uvconvertor::Convertor;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -80,18 +80,17 @@ impl CliArgs {
     /// 解析文件参数为结构化格式
     fn parse_file_args(&self) -> Vec<FileWithTargets> {
         self.file_args.iter()
-            .filter_map(|arg| {
+            .map(|arg| {
                 let parts: Vec<&str> = arg.split(',').collect();                
                 let path = PathBuf::from(parts[0].trim());
                 let targets: Vec<_> = parts[1..].iter()
                     .map(|s| s.trim().to_string()).collect::<HashSet<_>>()
                     .into_iter().map(Some).collect();
-                Some(FileWithTargets {
+                FileWithTargets {
                     path,
-                    targets: targets.is_empty().then(|| vec![None]).unwrap_or(targets),
-                })
-            })
-            .collect()
+                    targets: if targets.is_empty() { vec![None] } else { targets },
+                }
+            }).collect()
     }
     
     /// 转换为最终处理用的参数结构
@@ -113,15 +112,15 @@ fn main() {
 
     let mut convertor = args.files.par_iter().map(|f| {
         f.targets.par_iter().filter_map(|t| {
-            match UVConvertor::from(&f.path, t.as_deref()) {
+            match Convertor::from(&f.path, t.as_deref()) {
                 Ok(convertor) => Some(convertor),
                 Err(e) => {
                     eprintln!("{e}");
                     None
                 },
             }
-        }).reduce(UVConvertor::new, |a, b| a + b)
-    }).reduce(UVConvertor::new, |a, b| a + b);
+        }).reduce(Convertor::new, |a, b| a + b)
+    }).reduce(Convertor::new, |a, b| a + b);
 
     if let Some(rep) = args.disk_repl {
         convertor.replace_disk(&rep);
