@@ -133,7 +133,7 @@ impl Convertor {
         for command in &mut self.commands {
             command.arguments.retain(|argument| {
                 argument.strip_prefix("-I").is_none_or(|path| {
-                    *cache.entry(path.to_string()).or_insert_with(|| 
+                    !*cache.entry(path.to_string()).or_insert_with(|| 
                         contains_std_headers(Path::new(path))
                     )
                 })

@@ -54,8 +54,8 @@ struct CliArgs {
     pattern: Option<String>,
 
     /// Exclude sysroot's include paths
-    #[arg(short = 'n', long = "no-sysinc")]
-    no_sysinc: bool,
+    #[arg(short = 'n', long = "no-stdinc")]
+    no_stdinc: bool,
 }
 
 /// 解析后的文件参数
@@ -73,7 +73,7 @@ struct ProcessedArgs {
     extra_args: Vec<String>,
     removed_args: Vec<String>,
     disk_repl: Option<String>,
-    without_sysroot: bool,
+    no_stdinc: bool,
 }
 
 impl CliArgs {
@@ -101,7 +101,7 @@ impl CliArgs {
             extra_args: self.extopts.clone(),
             removed_args: self.rmopts.clone(),
             disk_repl: self.pattern.clone(),
-            without_sysroot: self.no_sysinc,
+            no_stdinc: self.no_stdinc,
         }
     }
 }
@@ -126,7 +126,7 @@ fn main() {
         convertor.replace_disk(&rep);
     }
 
-    if args.without_sysroot {
+    if args.no_stdinc {
         convertor.remove_sysroot();
     }
 
