@@ -1,6 +1,6 @@
 [package]
 name = "uvconvertor"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 repository = "https://github.com/a3750/uvconvertor.git"
 authors = ["Jie 1066751867@qq.com"]
