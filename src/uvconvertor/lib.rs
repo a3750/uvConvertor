@@ -1,10 +1,5 @@
 use std::{
-    fs::{read_to_string, File},
-    path::{Path, PathBuf},
-    collections::HashMap,
-    io::{self, Read},
-    error::Error,
-    ops::Add,
+    collections::HashMap, error::Error, fs::{read_to_string, File}, io::{self, Read}, ops::Add, path::{absolute, Path, PathBuf}
 };
 use regex::{Captures, Regex};
 use roxmltree::{Document, ExpandedName, Node};
@@ -285,6 +280,7 @@ impl Convertor {
     }
 
     fn parse_dep_file(dep_path: &Path, directory: &Path) -> Result<Vec<CompileCommand>, Box<dyn Error>> {
+        let directory = absolute(directory)?;
         let content = read_to_string(dep_path)?
             .replace("\\", "/")
             .replace("\r", " ")
